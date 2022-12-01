@@ -27,3 +27,12 @@
 (display "Part 1: ")
 (display (part1 (parse-input-file "inputs/day1")))
 (newline)
+
+(define (part2 parsed-input)
+  (letrec ((sums (map (lambda (sublist) (sum-entry sublist)) parsed-input))
+           (top-three (list-head (sort sums >) 3)))
+    (apply + top-three)))
+
+(display "Part 2: ")
+(display (part2 (parse-input-file "inputs/day1")))
+(newline)
