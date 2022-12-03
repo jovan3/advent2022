@@ -18,10 +18,13 @@
            (second-half (list-tail chars-list list-half-index)))
     (list first-half second-half)))
 
+(define (calculate-priority-value char)
+  (let ((ascii-offset (if (char-upper-case? char) 38 96)))
+    (- (char->integer char) ascii-offset)))
+
 (define (calculate-priority first-half second-half)
-  (letrec ((common-char (car (lset-intersection eqv? first-half second-half)))
-           (ascii-offset (if (char-upper-case? common-char) 38 96)))
-    (- (char->integer common-char) ascii-offset)))
+  (let ((common-char (car (lset-intersection eqv? first-half second-half))))
+    (calculate-priority-value common-char)))
 
 (define (part1 lines)
   (let process ((sum 0)
@@ -35,4 +38,21 @@
 
 (display "day 3 part 1: ")
 (display (part1 (parse-input "inputs/day3")))
+(newline)
+
+(define (part2 lines)
+  (let process ((sum 0)
+                (entries lines))
+    (if (null? entries)
+        sum
+        (letrec ((lines (take entries 3))
+                 (lines-chars (map (lambda (str) (string->list str)) lines))
+                 (intersection (lset-intersection eqv?
+                                                  (first lines-chars)
+                                                  (second lines-chars)
+                                                  (third lines-chars))))
+          (process (+ sum (calculate-priority-value (car intersection))) (drop entries 3))))))
+
+(display "day3 part 2: ")
+(display (part2 (parse-input "inputs/day3")))
 (newline)
